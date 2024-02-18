@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TwoFactorController;
+use App\Models\Category;
 use App\Models\Migration;
 use App\Models\Role;
 use App\Models\Service;
@@ -30,7 +33,9 @@ Route::get('/', function () {
         ["name" => "customer", "label" => "Customer"]
     ]); */
 
-    return view('welcome');
+    $categories = Category::all();
+
+    return view('welcome', compact('categories'));
 });
 
 Route::get('/dashboard', function () {
@@ -39,8 +44,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('customers', CustomerController::class);
-    Route::resource('sellers', SellerController::class);
 });
+Route::resource('sellers', SellerController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -53,17 +58,16 @@ Route::middleware(['auth', 'twofactor'])->group(function () {
     Route::resource('verify', TwoFactorController::class)->only('index', 'store');
 });
 
-Route::get('/search', function (Request $request) {
-    $keyword = $request->get('q');
-
-    $services = Service::where('title', 'LIKE', "%$keyword%")->paginate(12);
-
-    return view('search', [
-        'q' => $keyword,
-        'services' => $services,
-    ]);
-})->name('search');
+Route::get('/search', [ServiceController::class, 'search'])->name('search');
 
 Route::resource('service', ServiceController::class);
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('order', OrderController::class);
+    Route::post('message', [MessageController::class, 'store'])->name('message.create');
+    Route::get('inbox', [MessageController::class, 'index'])->name('inbox');
+});
+
 
 require __DIR__ . '/auth.php';

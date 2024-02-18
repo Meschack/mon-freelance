@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Order;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
-class SellerController extends Controller
+class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Order::class, 'order');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $sellers = User::join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('roles.name', 'seller')
-            ->get();
+        $orders = Order::query()->where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(12);
 
-
-        return view('sellers.index', compact('sellers'));
+        return view('orders.index', compact('orders'));
     }
 
     /**
@@ -33,20 +36,30 @@ class SellerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /**
+         * @var Service $service
+         */
+
+        $service = Service::query()->findOrFail($request->get('service'));
+
+        /** @var Order $order */
+
+        $order = Order::create([
+            'service_id' => $service->id,
+            'user_id' => auth()->id(),
+            'price' => $service->price,
+            'status' => 'pending'
+        ]);
+
+        dd($order);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $seller)
+    public function show(Order $id)
     {
-        $services = $seller->services()->paginate(12);
-
-        return view(
-            'sellers.show',
-            compact(['seller', 'services'])
-        );
+        //
     }
 
     /**

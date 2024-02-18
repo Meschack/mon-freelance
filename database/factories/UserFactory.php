@@ -19,7 +19,7 @@ class UserFactory extends Factory
     {
         $firstname = $this->faker->firstName;
         $lastname = $this->faker->lastName;
-        $email = strtolower($firstname) . strtoupper($lastname) . '@gmail.com';
+        $email = strtolower($firstname) . strtolower($lastname) . '@gmail.com';
 
         return [
             'firstname' => $firstname,

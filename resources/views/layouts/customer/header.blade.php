@@ -1,4 +1,4 @@
-<header class="border-b flex gap-10 py-5 px-5 md:px-10 lg:px-20 sticky top-0 z-10 bg-white shadow-sm">
+<header class="border-b flex items-center gap-10 h-20 px-5 md:px-10 lg:px-20 sticky top-0 z-10 bg-white shadow-sm">
     <h1>
         <a href="/">MonFreelance</a>
     </h1>
@@ -6,7 +6,11 @@
     <div class="flex justify-between items-center w-full">
         <div class="w-full max-w-[500px]">
             <form action="{{ route('search') }}" method="GET" class="flex items-center justify-between gap-3">
-                <input type="text" placeholder="Find a service" name="q" class="basis-full">
+                <input type="text" value="{{ request()->has('q') ? request('q') : '' }}" placeholder="Find a service"
+                    name="q" class="basis-full">
+
+                <input type="hidden" value="{{ request()->has('category') ? request('category') : '' }}"
+                    name="category">
 
                 <button>Search</button>
             </form>
@@ -17,7 +21,16 @@
                 <x-slot name="trigger">
                     <button
                         class="inline-flex bg-transparent items-center px-2 py-1 text-sm font-medium text-gray-500 rounded-full border">
-                        <div class="aspect-square w-8 rounded-full bg-gray-400"></div>
+                        <div
+                            class="aspect-square w-8 rounded-full bg-white flex items-center justify-center text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-circle-user">
+                                <circle cx="12" cy="12" r="10" />
+                                <circle cx="12" cy="10" r="3" />
+                                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+                            </svg>
+                        </div>
 
                         @auth()
                             <span class="ms-1">{{ Auth::user()->firstname }}</span>
@@ -35,10 +48,10 @@
 
                 <x-slot name="content">
                     @auth
-                        <form action="{{ route('logout') }}" method="post">
+                        <form action="{{ route('logout') }}" method="post" class="">
                             @csrf
 
-                            <button type="submit" class="p-0">
+                            <button type="submit" class="p-0 w-full">
                                 <x-dropdown-link>
                                     {{ __('Logout') }}
                                 </x-dropdown-link>
@@ -50,6 +63,22 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+
+                        <hr>
+
+                        @if (Auth::user()->role->name === App\Models\User::ROLE_SELLER)
+                            <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
+                                {{ __('Seller profile') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('order.index')">
+                                {{ __('My Orders') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
+                                {{ __('Customers Orders') }}
+                            </x-dropdown-link>
+                        @endif
                     @endauth
 
                     @guest

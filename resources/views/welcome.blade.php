@@ -1,16 +1,34 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.customer.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'MonFreelance')
 
-    <title>MonFreelance</title>
+@section('full-width-element')
+    <div class="h-[calc(100vh-80px)] w-full bg-gray-200 grid grid-cols-2">
 
-</head>
+    </div>
+@endsection
 
-<body class="antialiased">
+@section('content')
+    <div class="flex flex-col gap-10 items-center">
+        <h2 class="w-fit">Our Categories</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+            @foreach ($categories as $category)
+                <div class="border relative">
+                    <div class="w-full aspect-video animate-pulse bg-gray-300">
 
-</body>
+                    </div>
+                    <div class="p-2">
+                        <h4 class="truncate">
+                            {{ $category->label }}
+                        </h4>
+                        <p>
+                            {{ $category->services->count() }} total services
+                        </p>
+                    </div>
 
-</html>
+                    <a href="{{ route('search', ['category' => $category->name]) }}" class="absolute inset-0"></a>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endsection

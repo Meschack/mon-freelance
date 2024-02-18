@@ -40,7 +40,7 @@
                 </a>
             @endif
 
-            <button type="submit" class="ms-3">
+            <button type="submit" class="ms-3 bg-blue-600">
                 {{ __('Log in') }}
             </button>
         </div>

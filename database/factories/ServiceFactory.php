@@ -29,7 +29,7 @@ class ServiceFactory extends Factory
 
         return [
             'title' => $this->faker->sentence,
-            'description' => $this->faker->text(1500),
+            'description' => $this->faker->text(4000),
             'price' => $this->faker->randomFloat(2, 10, 1000),
             'user_id' => $this->faker->randomElement($sellersIds),
             'category_id' => $this->faker->randomElement($categoriesIds),

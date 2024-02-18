@@ -26,6 +26,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $created_at
  * @property string $updated_at
  * @property string $deleted_at
+ * @property Message[] $messages
+ * @property Message[] $messages
+ * @property Notification[] $notifications
  * @property Order[] $orders
  * @property Service[] $services
  * @property Role $role
@@ -33,6 +36,12 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends AuthUser
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    public const ROLE_ADMIN = "admin";
+
+    public const ROLE_SELLER = "seller";
+
+    public const ROLE_CUSTOMER = "customer";
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,6 +72,62 @@ class User extends AuthUser
         $this->two_factor_code = null;
         $this->two_factor_expires_at = null;
         $this->save();
+    }
+
+    // Dans le modèle User
+    /* public function conversations()
+    {
+        return $this->hasMany(Message::class, 'sender_id')->orWhere('receiver_id', $this->id)
+            ->with(['sender', 'receiver'])
+            ->latest('updated_at')
+            ->get();
+    } */
+
+    // Dans le modèle User
+    public function conversations()
+    {
+        $sentMessages = $this->hasMany(Message::class, 'sender_id');
+        $receivedMessages = $this->hasMany(Message::class, 'receiver_id');
+
+        $allMessages = $sentMessages->union($receivedMessages)
+            ->with(['sender', 'receiver'])
+            ->latest('updated_at')
+            ->get();
+
+        // Utilisez la méthode groupBy pour regrouper les messages par correspondant
+        $groupedMessages = $allMessages->groupBy(function ($message) {
+            // Utilisez l'ID de l'utilisateur avec lequel l'utilisateur actuel a échangé des messages
+            return $message->sender_id == $this->id ? $message->receiver_id : $message->sender_id;
+        });
+
+        return $groupedMessages;
+    }
+
+
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany('App\Models\Message', 'sender_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany('App\Models\Message', 'receiver_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany('App\Models\Notification');
     }
 
     /**

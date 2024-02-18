@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property integer $id
@@ -51,5 +52,10 @@ class Service extends Model
     public function category()
     {
         return $this->belongsTo('App\Models\Category');
+    }
+
+    public function imageUrl(): string
+    {
+        return Storage::disk('public')->url($this->miniature);
     }
 }

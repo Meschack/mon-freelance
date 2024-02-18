@@ -24,9 +24,22 @@
         </div>
 
         <div class="col-span-3 grid grid-cols-3 gap-5">
-            @foreach ($seller->services as $service)
+            <div class="col-span-3 flex items-center justify-between">
+                <h3>Services</h3>
+                @auth
+                    @if (auth()->id() === $seller->id)
+                        <a class="btn justify-self-end !px-10" href="{{ route('service.create') }}">New</a>
+                    @endif
+                @endauth
+            </div>
+
+            @foreach ($services as $service)
                 <x-service-card :service="$service"></x-service-card>
             @endforeach
+
+            <div class="col-span-3 flex items-center justify-end">
+                {{ $services->links() }}
+            </div>
         </div>
     </div>
 @endsection

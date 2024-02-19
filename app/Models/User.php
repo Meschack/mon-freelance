@@ -75,15 +75,6 @@ class User extends AuthUser
     }
 
     // Dans le modèle User
-    /* public function conversations()
-    {
-        return $this->hasMany(Message::class, 'sender_id')->orWhere('receiver_id', $this->id)
-            ->with(['sender', 'receiver'])
-            ->latest('updated_at')
-            ->get();
-    } */
-
-    // Dans le modèle User
     public function conversations()
     {
         $sentMessages = $this->hasMany(Message::class, 'sender_id');
@@ -103,8 +94,15 @@ class User extends AuthUser
         return $groupedMessages;
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id')->orWhere('receiver_id', $this->id);
+    }
 
-
+    public function messagesWithUser($otherUserId)
+    {
+        return $this->conversations()[$otherUserId] ?? [];
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -152,5 +150,10 @@ class User extends AuthUser
     public function role()
     {
         return $this->belongsTo('App\Models\Role');
+    }
+
+    public function customersOrders()
+    {
+        return $this->hasManyThrough(Order::class, Service::class);
     }
 }

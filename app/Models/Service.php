@@ -58,4 +58,9 @@ class Service extends Model
     {
         return Storage::disk('public')->url($this->miniature);
     }
+
+    public function details(): string
+    {
+        return route('service.show', ['service' => $this->id]);
+    }
 }

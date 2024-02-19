@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMessageRequest;
 use App\Models\Message;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,18 +24,27 @@ class MessageController extends Controller
 
         $conversations = $user->conversations();
 
-        $displayedConversation = ($contact !== null ? $conversations[$contact] : $conversations->first())->reverse();
+        $content = ($contact !== null ? $conversations[$contact] : $conversations->first())->reverse();
 
-        // dump($displayedConversation);
-
-        return view("inbox.show", compact(["conversations", "displayedConversation"]));
+        return view("inbox.show", compact(["conversations", "content"]));
     }
 
     public function store(CreateMessageRequest $request)
     {
         $data = $request->safe()->merge(['sender_id' => auth()->id()])->toArray();
 
+        /**
+         * @var \App\Models\Message $message
+         */
         $message = Message::create($data);
+
+        // send a notification
+
+        Notification::create([
+            'user_id' => $message->receiver_id,
+            'message' => Auth::user()->firstname . ' ' .  Auth::user()->lastname . ' have just sent you a message.',
+            'link' => "/inbox/?user=" . $message->sender_id
+        ]);
 
         return back();
     }

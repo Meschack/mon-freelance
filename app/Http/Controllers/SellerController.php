@@ -41,7 +41,7 @@ class SellerController extends Controller
      */
     public function show(User $seller)
     {
-        $services = $seller->services()->paginate(12);
+        $services = $seller->services()->whereNull('deleted_at')->paginate(12);
 
         return view(
             'sellers.show',

@@ -16,82 +16,111 @@
             </form>
         </div>
 
-        <div class="rounded-full p-2">
-            <x-dropdown align="right" width="48">
-                <x-slot name="trigger">
-                    <button
-                        class="inline-flex bg-transparent items-center px-2 py-1 text-sm font-medium text-gray-500 rounded-full border">
-                        <div
-                            class="aspect-square w-8 rounded-full bg-white flex items-center justify-center text-gray-600">
+        <div class="flex items-center gap-5">
+            <div class="flex items-center gap-0">
+                <div class="p-3 relative h-11 cursor-pointer aspect-square">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <a href="{{ route('inbox') }}" class="text-gray-500 block p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-circle-user">
-                                <circle cx="12" cy="12" r="10" />
-                                <circle cx="12" cy="10" r="3" />
-                                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+                                stroke-linejoin="round" class="lucide lucide-message-circle">
+                                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
                             </svg>
-                        </div>
-
-                        @auth()
-                            <span class="ms-1">{{ Auth::user()->firstname }}</span>
-                        @endauth
-
-                        <div class="ms-3">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
+                        </a>
+                    </div>
+                </div>
+                <div class="p-3 relative h-11 cursor-pointer aspect-square">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <a href="{{ route('notifications') }}" class="text-gray-500 block p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-bell">
+                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
                             </svg>
-                        </div>
-                    </button>
-                </x-slot>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-                <x-slot name="content">
-                    @auth
-                        <form action="{{ route('logout') }}" method="post" class="">
-                            @csrf
+            <div class="rounded-full p-2">
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button
+                            class="inline-flex bg-transparent items-center px-2 py-1 text-sm font-medium text-gray-500 rounded-full border">
+                            <div
+                                class="aspect-square w-8 rounded-full bg-white flex items-center justify-center text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <circle cx="12" cy="10" r="3" />
+                                    <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+                                </svg>
+                            </div>
 
-                            <button type="submit" class="p-0 w-full">
-                                <x-dropdown-link>
-                                    {{ __('Logout') }}
-                                </x-dropdown-link>
-                            </button>
-                        </form>
+                            @auth()
+                                <span class="ms-1">{{ Auth::user()->firstname }}</span>
+                            @endauth
 
-                        <hr>
+                            <div class="ms-3">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
 
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                    <x-slot name="content">
+                        @auth
+                            <form action="{{ route('logout') }}" method="post" class="">
+                                @csrf
 
-                        <hr>
+                                <button type="submit" class="p-0 w-full">
+                                    <x-dropdown-link>
+                                        {{ __('Logout') }}
+                                    </x-dropdown-link>
+                                </button>
+                            </form>
 
-                        @if (Auth::user()->role->name === App\Models\User::ROLE_SELLER)
-                            <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
-                                {{ __('Seller profile') }}
+                            <hr>
+
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
                             </x-dropdown-link>
+
+                            <hr>
 
                             <x-dropdown-link :href="route('order.index')">
                                 {{ __('My Orders') }}
                             </x-dropdown-link>
 
-                            <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
-                                {{ __('Customers Orders') }}
+                            @if (Auth::user()->role->name === App\Models\User::ROLE_SELLER)
+                                <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
+                                    {{ __('Seller profile') }}
+                                </x-dropdown-link>
+                                <hr>
+                                <x-dropdown-link :href="route('sellers.show', ['seller' => Auth::user()])">
+                                    {{ __('Customers Orders') }}
+                                </x-dropdown-link>
+                            @endif
+                        @endauth
+
+                        @guest
+                            <x-dropdown-link :href="route('login')">
+                                {{ __('Sign In') }}
                             </x-dropdown-link>
-                        @endif
-                    @endauth
 
-                    @guest
-                        <x-dropdown-link :href="route('login')">
-                            {{ __('Sign In') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('register')">
-                            {{ __('Sign Up') }}
-                        </x-dropdown-link>
-                    @endguest
-                </x-slot>
-            </x-dropdown>
+                            <x-dropdown-link :href="route('register')">
+                                {{ __('Sign Up') }}
+                            </x-dropdown-link>
+                        @endguest
+                    </x-slot>
+                </x-dropdown>
+            </div>
         </div>
     </div>
 </header>

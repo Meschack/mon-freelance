@@ -33,7 +33,7 @@
                 <div class="flex items-center gap-10 md:flex-row flex-col w-full">
                     <div class="form-control-wrapper basis-1/2">
                         <x-input-label for="price" :value="__('Price')" />
-                        <x-text-input id="price" class="block mt-1 w-full" type="number" name="price"
+                        <x-text-input id="price" class="block mt-1 w-full" type="text" name="price"
                             :value="old('price', $service->price)" required autofocus autocomplete="price" />
                         <x-input-error :messages="$errors->get('price')" class="mt-2" />
                     </div>
@@ -53,7 +53,7 @@
                     <div class="form-control-wrapper flex-1 !justify-between">
                         <x-input-label for="miniature" :value="__('Miniature (Max 2MB)')" />
                         <x-text-input id="miniature" class="block mt-1 w-full border border-gray-500" type="file"
-                            name="miniature" required autocomplete="miniature" />
+                            name="miniature" autocomplete="miniature" />
                         <x-input-error :messages="$errors->get('miniature')" class="mt-2" />
                     </div>
 

@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateServiceRequest extends FormRequest
+class PatchOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +23,7 @@ class CreateServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => ["string", "required", "max:100"],
-            "description" => ["string", "required", "min:500"],
-            "price" => ["integer", "required", "min:5", "max:1000"],
-            "miniature" => ["image", "max:2000"],
-            "category_id" => ["required", "exists:categories,id"],
+            'action' => ['required', Rule::in(['cancel', 'done'])],
         ];
     }
 }

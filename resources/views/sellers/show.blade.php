@@ -33,6 +33,12 @@
                 @endauth
             </div>
 
+            @if (session('success'))
+                <div class="bg-blue-600 border-blue-600 text-white py-5 px-3 rounded col-span-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             @foreach ($services as $service)
                 <x-service-card :service="$service"></x-service-card>
             @endforeach

@@ -34,7 +34,7 @@ class TwoFactorController extends Controller
 
         $user->resetTwoFactorCode();
 
-        return redirect()->to(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     public function resend(): RedirectResponse

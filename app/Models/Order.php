@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property integer $id
@@ -23,6 +24,7 @@ class Order extends Model
 {
     use HasFactory;
 
+    //TODO: Manage order delay
     /**
      * @var array
      */
@@ -42,5 +44,23 @@ class Order extends Model
     public function service()
     {
         return $this->belongsTo('App\Models\Service');
+    }
+
+    public static function getOrdersForLoggedInSeller()
+    {
+        /**
+         * @var User
+         */
+        $seller = Auth::user();
+
+        $servicesWithOrders = $seller->services()->with('orders')->get();
+
+        $allOrders = [];
+
+        foreach ($servicesWithOrders as $service) {
+            $allOrders = array_merge($allOrders, $service->orders->toArray());
+        }
+
+        return $allOrders;
     }
 }

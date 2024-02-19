@@ -30,7 +30,7 @@ class ServiceController extends Controller
             }
         }
 
-        $services = $query->paginate(12)->withQueryString();
+        $services = $query->whereNull('deleted_at')->paginate(12)->withQueryString();
 
         return view('search', [
             'q' => $keyword,
@@ -75,7 +75,7 @@ class ServiceController extends Controller
         /**
          * @var UploadedFile | null $miniature
          */
-        $miniature = $validated['miniature'];
+        $miniature = $validated['miniature'] ?? null;
 
         if ($miniature === null || $miniature->getError()) {
             return $validated;
@@ -86,6 +86,8 @@ class ServiceController extends Controller
         }
 
         $validated['miniature'] = $miniature->store('miniatures', 'public');
+
+        return $validated;
     }
 
     /**
@@ -109,19 +111,22 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateServiceRequest $request, string $id)
+    public function update(CreateServiceRequest $request, Service $service)
     {
+        $service->update($this->extractValidatedData($service, $request));
+
+        return redirect()->route('service.show', ['service' => $service]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service $service, Request $request)
+    public function destroy(Service $service)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        $service->deleted_at = now();
 
-        dd($service);
+        $service->save();
+
+        return back()->with("success", "The service have been successfully removed");
     }
 }

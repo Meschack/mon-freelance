@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Category;
-use App\Models\Order;
-use App\Models\Review;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
